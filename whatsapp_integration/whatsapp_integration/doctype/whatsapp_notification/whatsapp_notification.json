@@ -1,0 +1,175 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:name1",
+ "creation": "2022-05-26 13:10:40.387201",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "name1",
+  "doctype_c",
+  "event",
+  "value_changed",
+  "mobile_number_field",
+  "column_break_4",
+  "template",
+  "whatsapp_template_name",
+  "template_type",
+  "whatsapp_text_template",
+  "section_break_11",
+  "location_table",
+  "section_break_13",
+  "condition",
+  "column_break_15",
+  "html_16",
+  "section_break_7",
+  "set_property_after_alert_section",
+  "set_property_after_alert",
+  "value_to_be_set"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "label": "Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "doctype_c",
+   "fieldtype": "Link",
+   "label": "Doctype ",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event ",
+   "options": "\nNew\nSave\nSubmit\nCancel\nValue Change\nCustom",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Template",
+   "options": "Whatsapp Message Template",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "location_table",
+   "fieldtype": "Table",
+   "label": "Location Table",
+   "options": "Location Map"
+  },
+  {
+   "fieldname": "mobile_number_field",
+   "fieldtype": "Data",
+   "label": "Mobile Number Field"
+  },
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "label": "Condition"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.event==\"Value Change\"",
+   "fieldname": "value_changed",
+   "fieldtype": "Select",
+   "label": "Value Changed"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "html_16",
+   "fieldtype": "HTML",
+   "options": "<p><strong>Condition Examples:</strong></p>\n<pre>doc.status==\"Open\"<br>doc.due_date==nowdate()<br>doc.total &gt; 40000\n</pre>"
+  },
+  {
+   "fetch_from": "template.text",
+   "fieldname": "whatsapp_text_template",
+   "fieldtype": "Text",
+   "label": "Whatsapp Text Template",
+   "read_only": 1
+  },
+  {
+   "fieldname": "set_property_after_alert_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Set Property After Alert "
+  },
+  {
+   "fieldname": "set_property_after_alert",
+   "fieldtype": "Data",
+   "label": "Set Property After Alert"
+  },
+  {
+   "fieldname": "value_to_be_set",
+   "fieldtype": "Data",
+   "label": "Value To Be Set"
+  },
+  {
+   "fetch_from": "template.whatsapp_template_name",
+   "fieldname": "whatsapp_template_name",
+   "fieldtype": "Data",
+   "label": "Whatsapp Template Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "template.type",
+   "fieldname": "template_type",
+   "fieldtype": "Data",
+   "label": "Header Type",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-05-29 16:08:50.836492",
+ "modified_by": "Administrator",
+ "module": "Whatsapp Integration",
+ "name": "Whatsapp Notification",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

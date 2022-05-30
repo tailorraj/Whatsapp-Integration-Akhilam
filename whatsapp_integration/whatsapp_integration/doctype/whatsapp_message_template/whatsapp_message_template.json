@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:whatsapp_template_name",
+ "creation": "2022-05-26 12:59:37.534266",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "whatsapp_template_name",
+  "text",
+  "section_break_2",
+  "location_table",
+  "section_break_4",
+  "type"
+ ],
+ "fields": [
+  {
+   "fieldname": "text",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Text",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Header type media will send document PDF along with message",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Header Type",
+   "options": "\nText\nMedia",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location_table",
+   "fieldtype": "Table",
+   "label": "Location Table",
+   "options": "Location Detail"
+  },
+  {
+   "description": "Plese Add Same Name as Whatsapp API Dashboard",
+   "fieldname": "whatsapp_template_name",
+   "fieldtype": "Data",
+   "label": "Whatsapp Template Name",
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-05-29 15:09:02.986612",
+ "modified_by": "Administrator",
+ "module": "Whatsapp Integration",
+ "name": "Whatsapp Message Template",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

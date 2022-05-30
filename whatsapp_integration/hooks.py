@@ -31,7 +31,7 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+# doctype_js = {"Sales Invoice" : "custom_scripts/sales_invoice.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -102,6 +102,29 @@ app_license = "MIT"
 # 		"on_trash": "method"
 #	}
 # }
+doc_events = {
+
+     "*": {
+            "validate"                      : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "onload"                        : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_insert"                 : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "after_insert"                  : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_naming"                 : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_change"                 : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_update_after_submit"    : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_validate"               : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "before_save"                   : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "autoname"                      : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+		    "on_update"                     : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+		    "on_cancel"                     : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+		    "on_trash"                      : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+		    "on_submit"                     : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+		    "on_update_after_submit"        : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+            "on_change"                     : ["whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.run_whatsapp_notifications"],
+	},
+
+
+}
 
 # Scheduled Tasks
 # ---------------
