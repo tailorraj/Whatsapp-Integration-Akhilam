@@ -9,6 +9,7 @@ from frappe.utils import nowdate,parse_val
 from six import string_types
 import json
 from whatsapp_integration.whatsapp_integration.doctype.whatsapp_setting.whatsapp_setting import send_to_whatsapp
+import re
 
 class WhatsappNotification(Document):
 
@@ -53,7 +54,14 @@ class WhatsappNotification(Document):
 		
 		mobile_number = frappe.db.get_value(doc.doctype,doc.name,self.mobile_number_field)
 		if not mobile_number:
-			frappe.throw("Please enter Mobile Number!")
+			frappe.msgprint("Please enter Mobile Number in {} field".format(self.mobile_number_field))
+		mobile_check = check_mobile_number(mobile_number)
+		if mobile_check == "correct":
+			pass
+		elif mobile_check == "incorrect":
+			frappe.msgprint("Invalid Mobile Number as per country rule")
+		else:
+			mobile_number = mobile_check
 		dynamic_values = []
 		for item in self.location_table:
 			dynamic_values.append({
@@ -172,3 +180,21 @@ def evaluate_alert(doc, alert, event):
 
 def get_context(doc):
 	return {"doc": doc, "nowdate": nowdate, "frappe.utils": frappe.utils}
+
+
+
+def check_mobile_number(num):
+  
+    if re.match("^91[0-9]{10}$",num):
+        
+        return "correct"
+        
+    elif re.match("^[0-9]{10}$",num):
+        country_code = frappe.db.get_single_value('Whatsapp Setting', 'country_code')
+       
+        
+        return str(country_code)+str(num)      
+        
+    else:
+       
+        return "incorrect"

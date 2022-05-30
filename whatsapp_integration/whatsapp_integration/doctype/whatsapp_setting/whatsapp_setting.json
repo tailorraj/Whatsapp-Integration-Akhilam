@@ -9,7 +9,9 @@
   "enable",
   "access_token",
   "column_break_4",
-  "phone_id"
+  "phone_id",
+  "auto_append_country_code",
+  "country_code"
  ],
  "fields": [
   {
@@ -34,12 +36,26 @@
    "fieldtype": "Password",
    "label": "Phone ID",
    "mandatory_depends_on": "doc.enable"
+  },
+  {
+   "default": "0",
+   "description": "If this is checked below mentioned country code will be automatically appended to your receiver number.",
+   "fieldname": "auto_append_country_code",
+   "fieldtype": "Check",
+   "label": "auto_append_country_code"
+  },
+  {
+   "description": "Mention your country code here",
+   "fieldname": "country_code",
+   "fieldtype": "Data",
+   "label": "Country Code",
+   "mandatory_depends_on": "eval:doc.auto_append_country_code"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-05-29 18:07:50.060372",
+ "modified": "2022-05-30 22:25:35.463517",
  "modified_by": "Administrator",
  "module": "Whatsapp Integration",
  "name": "Whatsapp Setting",
