@@ -55,13 +55,17 @@ class WhatsappNotification(Document):
 		mobile_number = frappe.db.get_value(doc.doctype,doc.name,self.mobile_number_field)
 		if not mobile_number:
 			frappe.msgprint("Please enter Mobile Number in {} field".format(self.mobile_number_field))
-		mobile_check = check_mobile_number(mobile_number)
-		if mobile_check == "correct":
-			pass
-		elif mobile_check == "incorrect":
-			frappe.msgprint("Invalid Mobile Number as per country rule")
-		else:
-			mobile_number = mobile_check
+		auto_append_country_code = frappe.db.get_single_value('Whatsapp Setting', 'auto_append_country_code')
+		if auto_append_country_code:
+			mobile_check = check_mobile_number(mobile_number)
+			if mobile_check == "correct":
+				pass
+			elif mobile_check == "incorrect":
+				frappe.msgprint("Invalid Mobile Number as per country rule")
+			else:
+				mobile_number = mobile_check
+		elif re.match("^[0-9]{10}$",mobile_number) and not auto_append_country_code:
+			frappe.msgprint("Your Mobile Number doesnt containt country code please enable <b>Auto append country code</b> from <b>Whatsapp Setting</b>")
 		dynamic_values = []
 		for item in self.location_table:
 			dynamic_values.append({

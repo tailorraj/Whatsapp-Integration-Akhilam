@@ -42,7 +42,7 @@
    "description": "If this is checked below mentioned country code will be automatically appended to your receiver number.",
    "fieldname": "auto_append_country_code",
    "fieldtype": "Check",
-   "label": "auto_append_country_code"
+   "label": "Auto append country code"
   },
   {
    "description": "Mention your country code here",
@@ -55,7 +55,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-05-30 22:25:35.463517",
+ "modified": "2022-05-31 13:06:30.288957",
  "modified_by": "Administrator",
  "module": "Whatsapp Integration",
  "name": "Whatsapp Setting",
