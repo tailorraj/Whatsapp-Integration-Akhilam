@@ -105,7 +105,7 @@ def create_whatsapp_log(doc):
 def run_whatsapp_notifications(doc, method):
 	
 	'''Run notifications for this method'''
-	if frappe.flags.in_import or frappe.flags.in_patch or frappe.flags.in_install:
+	if frappe.flags.in_import or frappe.flags.in_patch or frappe.flags.in_install or frappe.flags.in_uninstall:
 		return
 
 	if doc.flags.whatsapp_notifications_executed==None:
