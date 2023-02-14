@@ -54,7 +54,7 @@ def create_components(template_type,ref_doctype,ref_docname,dynamic_values):
 						{
 							"type": "document",
 							"document": {
-								"link": get_url_for_telegram(ref_doctype, ref_docname),
+								"link": get_url_for_whatsapp(ref_doctype, ref_docname),
 								"filename":str(ref_docname)
 							}
 							
@@ -70,7 +70,7 @@ def create_components(template_type,ref_doctype,ref_docname,dynamic_values):
 	})
 	return components
 
-def get_url_for_telegram(doctype, name):
+def get_url_for_whatsapp(doctype, name):
 	doc = frappe.get_doc(doctype, name)
 	return "{url}/api/method/whatsapp_integration.get_pdf.pdf?doctype={doctype}&name={name}&key={key}".format(
 		url=frappe.utils.get_url(),
