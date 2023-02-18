@@ -102,6 +102,15 @@ app_license = "MIT"
 # 		"on_trash": "method"
 #	}
 # }
+fixtures = [
+	{"dt": "Custom Field", "filters": [
+		[
+			"name", "in", [
+				"Contact Phone-is_whatsapp_number_ak"
+			]
+		]
+	]}
+]
 doc_events = {
 
      "*": {

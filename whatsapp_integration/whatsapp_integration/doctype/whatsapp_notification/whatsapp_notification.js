@@ -31,6 +31,7 @@ frappe.notification = {
 					null : get_select_options(d); });
 
 			// set value changed options
+			frm.set_df_property("reference_field_for_party", "options", [""].concat(options));
 			frm.set_df_property("value_changed", "options", [""].concat(options));
 			frm.set_df_property("set_property_after_alert", "options", [""].concat(options));
 
@@ -74,6 +75,7 @@ frappe.ui.form.on('Whatsapp Notification', {
 					null : get_select_options(d); });
 
 			// set value changed options
+			frm.set_df_property("reference_field_for_party", "options", [""].concat(options));
 			frm.set_df_property("value_changed", "options", [""].concat(options));
 			frm.set_df_property("set_property_after_alert", "options", [""].concat(options));
 

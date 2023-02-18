@@ -1,7 +1,6 @@
 # Copyright (c) 2022, Raaj Tailor and contributors
 # For license information, please see license.txt
 
-from re import template
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -10,6 +9,7 @@ from six import string_types
 import json
 from whatsapp_integration.whatsapp_integration.doctype.whatsapp_setting.whatsapp_setting import send_to_whatsapp
 import re
+import time
 
 class WhatsappNotification(Document):
 
@@ -50,43 +50,118 @@ class WhatsappNotification(Document):
 					self.property_value, update_modified = False)
 				doc.set(self.set_property_after_alert, self.property_value)
 
-	def send_a_whatsapp_message(self, doc, context):
+	def get_mobile_numbers(self, doc):
+		mobile_numbers_array = []
+		if self.send_to_multiple_contact:
+			party_reference = frappe.db.get_value(doc.doctype,doc.name,self.reference_field_for_party)
+			party_type = get_party_type(doc.doctype,doc.name,self.reference_field_for_party)
+			
+			if not party_reference:
+				frappe.msgprint("No party found in field <b>{field}</b>".format(field=self.reference_field_for_party))			
+			list_of_contact = frappe.db.sql("""
+			select phone from `tabDynamic Link` dl inner join `tabContact Phone` cp on dl.parent = cp.parent where dl.link_name = %(party)s and dl.link_doctype = %(link_type)s and cp.is_whatsapp_number_ak = 1
+			""",({
+				"party" : party_reference,
+				"link_type": party_type
+			}),as_dict=1)
+
+			for num in list_of_contact:
+				rectify_number = self.validate_mobile_number(num['phone'])
+				if rectify_number['status'] == 200:
+					mobile_numbers_array.append(rectify_number['number'])					
+				elif rectify_number['status'] == 409:
+					frappe.msgprint(rectify_number['message'])
+			return mobile_numbers_array			
+		else:
+			#get single mobile number
+			mobile_number = frappe.db.get_value(doc.doctype,doc.name,self.mobile_number_field)
+			if not mobile_number:
+				frappe.msgprint("No mobile number found in field : <b>{field}</b>".format(field = self.mobile_number_field))
+				return mobile_numbers_array
+			rectify_number = self.validate_mobile_number(mobile_number)
+			if rectify_number['status'] == 200:
+				mobile_numbers_array = [rectify_number['number']]
+				return mobile_numbers_array
+			elif rectify_number['status'] == 409:
+				frappe.msgprint(rectify_number['message'])
+			return mobile_numbers_array
+	def send_a_whatsapp_message(self, doc, context):		
+# -----------------------------------------------Mobile Number Function-----------------------------------------------------------
+		mobile_numbers = self.get_mobile_numbers(doc)
+		# frappe.throw(str(mobile_numbers))
+		# mobile_number = frappe.db.get_value(doc.doctype,doc.name,self.mobile_number_field)
+
+		# if not mobile_number:
+		# 	frappe.msgprint("Please enter Mobile Number in {} field".format(self.mobile_number_field))
+
+		# auto_append_country_code = frappe.db.get_single_value('Whatsapp Setting', 'auto_append_country_code')
+		# if auto_append_country_code:
+		# 	mobile_check = check_mobile_number(mobile_number)
+		# 	if mobile_check == "correct":
+		# 		pass
+		# 	elif mobile_check == "incorrect":
+		# 		frappe.msgprint("Invalid Mobile Number as per country rule")
+		# 	else:
+		# 		mobile_number = mobile_check
+		# elif re.match("^[0-9]{10}$",mobile_number) and not auto_append_country_code:
+		# 	frappe.msgprint("Your Mobile Number doesnt containt country code please enable <b>Auto append country code</b> from <b>Whatsapp Setting</b>")
 		
-		mobile_number = frappe.db.get_value(doc.doctype,doc.name,self.mobile_number_field)
-		if not mobile_number:
-			frappe.msgprint("Please enter Mobile Number in {} field".format(self.mobile_number_field))
-		auto_append_country_code = frappe.db.get_single_value('Whatsapp Setting', 'auto_append_country_code')
-		if auto_append_country_code:
-			mobile_check = check_mobile_number(mobile_number)
-			if mobile_check == "correct":
-				pass
-			elif mobile_check == "incorrect":
-				frappe.msgprint("Invalid Mobile Number as per country rule")
-			else:
-				mobile_number = mobile_check
-		elif re.match("^[0-9]{10}$",mobile_number) and not auto_append_country_code:
-			frappe.msgprint("Your Mobile Number doesnt containt country code please enable <b>Auto append country code</b> from <b>Whatsapp Setting</b>")
+# -----------------------------------------------Mobile Number Function-----------------------------------------------------------	
+
+# -----------------------------------------Dynamic Values Setup-----------------------------------------------------------
 		dynamic_values = []
 		for item in self.location_table:
 			dynamic_values.append({
 				"type":"text",
 				"text":str(frappe.db.get_value(doc.doctype,doc.name,item.field_name))
 			})		
+# -----------------------------------------Dynamic Values Setup-----------------------------------------------------------
 		
-		# if self.template_type == "Media":
-		res = send_to_whatsapp(self.template_type,doc.doctype,doc.name,receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values)
-		# else:
-			# res = send_to_whatsapp_text(receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values)
+# ----------------------------------------Send Call--------------------------------------------------
+		if len(mobile_numbers) > 0:
+			for mobile_number in mobile_numbers:
+				res = send_to_whatsapp(self.template_type,doc.doctype,doc.name,receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values)
+				create_whatsapp_log({
+				"doctype_name" : doc.doctype,
+				"doc_name" : doc.name,			
+				"message" :_(res.content),
+				"message_template":self.whatsapp_template_name,
+				"dynamic_values":dynamic_values,
+				"status": "Success" if str(res.status_code) == "200" else "Fail",
+				"mobile_number" : mobile_number
+				})
+				time.sleep(1)
+		else:
+			frappe.msgprint("No number found to send whatsapp message")
 
-		create_whatsapp_log({
-			"doctype_name" : doc.doctype,
-			"doc_name" : doc.name,			
-			"message" :_(res.content),
-			"message_template":self.whatsapp_template_name,
-			"dynamic_values":dynamic_values,
-			"status": "Success" if str(res.status_code) == "200" else "Fail",
-			"mobile_number" : mobile_number
-		})
+	def get_contact_details(party):
+		pass
+
+	def validate_mobile_number(self,mobile_number):
+		if re.match("^[0-9]{10}$",mobile_number):
+			auto_append_country_code = frappe.db.get_single_value('Whatsapp Setting','country_code')
+			
+			if not auto_append_country_code:
+				message = "Your Mobile Number {mobile} doesnt containt country code please enable <b>Auto append country code</b> from <b>Whatsapp Setting</b>".format(mobile=mobile_number)
+				return {
+					"status":409,
+					"message":message
+				}
+			return {
+					"status":200,
+					"number":str(auto_append_country_code)+str(mobile_number) 
+				}
+		
+		return {
+			"status":200,
+			"number":str(mobile_number) 
+			}
+
+
+
+def get_party_type(doctype,name,field_name):
+	doc_meta = frappe.get_meta(doctype,name)
+	return doc_meta.get("fields", {"fieldname": field_name})[0].options
 
 def create_whatsapp_log(doc):
 		enl_doc = frappe.new_doc('Whatsapp Notification Log')	
@@ -189,13 +264,11 @@ def get_context(doc):
 
 def check_mobile_number(num):
   
-    if re.match("^91[0-9]{10}$",num):
-        
+    if re.match("^91[0-9]{10}$",num):        
         return "correct"
         
     elif re.match("^[0-9]{10}$",num):
-        country_code = frappe.db.get_single_value('Whatsapp Setting', 'country_code')
-       
+        country_code = frappe.db.get_single_value('Whatsapp Setting', 'country_code')     
         
         return str(country_code)+str(num)      
         

@@ -13,6 +13,8 @@
   "event",
   "value_changed",
   "mobile_number_field",
+  "send_to_multiple_contact",
+  "reference_field_for_party",
   "column_break_4",
   "template",
   "whatsapp_template_name",
@@ -73,6 +75,7 @@
    "options": "Location Map"
   },
   {
+   "depends_on": "eval:!doc.send_to_multiple_contact",
    "fieldname": "mobile_number_field",
    "fieldtype": "Data",
    "label": "Mobile Number Field"
@@ -147,14 +150,27 @@
    "fieldtype": "Data",
    "label": "Header Type",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "send_to_multiple_contact",
+   "fieldtype": "Check",
+   "label": "Send to multiple contact"
+  },
+  {
+   "depends_on": "send_to_multiple_contact",
+   "fieldname": "reference_field_for_party",
+   "fieldtype": "Select",
+   "label": "Reference field for party"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-05-29 16:08:50.836492",
+ "modified": "2023-02-18 16:06:45.812420",
  "modified_by": "Administrator",
  "module": "Whatsapp Integration",
  "name": "Whatsapp Notification",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -171,5 +187,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
