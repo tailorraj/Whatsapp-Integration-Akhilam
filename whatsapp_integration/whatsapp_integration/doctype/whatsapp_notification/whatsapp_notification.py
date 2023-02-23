@@ -59,7 +59,7 @@ class WhatsappNotification(Document):
 			if not party_reference:
 				frappe.msgprint("No party found in field <b>{field}</b>".format(field=self.reference_field_for_party))			
 			list_of_contact = frappe.db.sql("""
-			select phone from `tabDynamic Link` dl inner join `tabContact Phone` cp on dl.parent = cp.parent where dl.link_name = %(party)s and dl.link_doctype = %(link_type)s and cp.is_whatsapp_number_ak = 1
+			select phone from `tabDynamic Link` dl inner join `tabAddress Contact` cp on dl.parent = cp.parent where dl.link_name = %(party)s and dl.link_doctype = %(link_type)s and cp.is_whatsapp_number = 1
 			""",({
 				"party" : party_reference,
 				"link_type": party_type
