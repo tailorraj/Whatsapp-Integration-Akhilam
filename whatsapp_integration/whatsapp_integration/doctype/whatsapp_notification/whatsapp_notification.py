@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import nowdate,parse_val
+from frappe.utils import nowdate,parse_val,add_to_date
 from six import string_types
 import json
 from whatsapp_integration.whatsapp_integration.doctype.whatsapp_setting.whatsapp_setting import send_to_whatsapp
@@ -136,6 +136,38 @@ class WhatsappNotification(Document):
 
 	def get_contact_details(party):
 		pass
+	def get_documents_for_today(self):
+		"""get list of documents that will be triggered today"""
+		docs = []
+
+		diff_days = self.days_in_advance
+		if self.event == "Days After":
+			diff_days = -diff_days
+
+		reference_date = add_to_date(nowdate(), days=diff_days)
+		reference_date_start = reference_date + " 00:00:00.000000"
+		reference_date_end = reference_date + " 23:59:59.000000"
+
+		doc_list = frappe.get_all(
+			self.doctype_c,
+			fields="name",
+			filters=[
+				{self.date_changed: (">=", reference_date_start)},
+				{self.date_changed: ("<=", reference_date_end)},
+			],
+		)
+
+		for d in doc_list:
+			doc = frappe.get_doc(self.doctype_c, d.name)
+
+			if self.condition and not frappe.safe_eval(
+				self.condition, None, get_context(doc)
+			):
+				continue
+
+			docs.append(doc)
+
+		return docs
 
 	def validate_mobile_number(self,mobile_number):
 		if re.match("^[0-9]{10}$",mobile_number):
@@ -161,7 +193,33 @@ class WhatsappNotification(Document):
 
 def get_party_type(doctype,name,field_name):
 	doc_meta = frappe.get_meta(doctype,name)
-	return doc_meta.get("fields", {"fieldname": field_name})[0].options
+	if doc_meta.get("fields", {"fieldname": field_name})[0].fieldtype == "Dynamic Link":
+		party_type = frappe.db.get_value("Quotation",name,doc_meta.get("fields", {"fieldname": field_name})[0].options)
+		return party_type
+	else:
+		return doc_meta.get("fields", {"fieldname": field_name})[0].options
+
+def trigger_daily_alerts():
+	trigger_notifications(None, "daily")
+
+
+def trigger_notifications(doc, method=None):
+	if frappe.flags.in_import or frappe.flags.in_patch:
+		# don't send notifications while syncing or patching
+		return
+
+	if method == "daily":
+		doc_list = frappe.get_all(
+			"Whatsapp Notification",
+			filters={"event": ("in", ("Days Before", "Days After")), "enabled": 1},
+		)
+		for d in doc_list:
+			alert = frappe.get_doc("Whatsapp Notification", d.name)
+
+			for doc in alert.get_documents_for_today():
+				# print(doc.name)
+				evaluate_alert(doc, alert, alert.event)
+				frappe.db.commit()
 
 def create_whatsapp_log(doc):
 		enl_doc = frappe.new_doc('Whatsapp Notification Log')	
@@ -249,6 +307,7 @@ def evaluate_alert(doc, alert, event):
 
 		if event != "Value Change" and not doc.is_new():
 			doc = frappe.get_doc(doc.doctype, doc.name)
+		# print("Send Alert for "+str(doc.name))
 		alert.send(doc)
 	
 	except Exception as e:
@@ -264,14 +323,14 @@ def get_context(doc):
 
 def check_mobile_number(num):
   
-    if re.match("^91[0-9]{10}$",num):        
-        return "correct"
-        
-    elif re.match("^[0-9]{10}$",num):
-        country_code = frappe.db.get_single_value('Whatsapp Setting', 'country_code')     
-        
-        return str(country_code)+str(num)      
-        
-    else:
-       
-        return "incorrect"
+	if re.match("^91[0-9]{10}$",num):		
+		return "correct"
+
+	elif re.match("^[0-9]{10}$",num):
+		country_code = frappe.db.get_single_value('Whatsapp Setting', 'country_code')	 
+
+		return str(country_code)+str(num)	  
+
+	else:
+	
+		return "incorrect"

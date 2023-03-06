@@ -135,6 +135,23 @@ doc_events = {
 
 }
 
+scheduler_events = {
+# 	"all": [
+# 		"erpnext_telegram_integration.tasks.all"
+# 	],
+	"daily": [
+		"whatsapp_integration.whatsapp_integration.doctype.whatsapp_notification.whatsapp_notification.trigger_daily_alerts"
+	],
+	# "hourly": [
+	# 	"erpnext_telegram_integration.extra_notifications.doctype.date_notification.date_notification.trigger_daily_alerts",
+	# ],
+# 	"weekly": [
+# 		"erpnext_telegram_integration.tasks.weekly"
+# 	]
+# 	"monthly": [
+# 		"erpnext_telegram_integration.tasks.monthly"
+# 	]
+}
 # Scheduled Tasks
 # ---------------
 
