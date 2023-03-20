@@ -53,17 +53,30 @@ class WhatsappNotification(Document):
 	def get_mobile_numbers(self, doc):
 		mobile_numbers_array = []
 		if self.send_to_multiple_contact:
-			party_reference = frappe.db.get_value(doc.doctype,doc.name,self.reference_field_for_party)
-			party_type = get_party_type(doc.doctype,doc.name,self.reference_field_for_party)
+			address_link = frappe.db.get_value(doc.doctype,doc.name,self.address_link)
+			# party_reference = frappe.db.get_value(doc.doctype,doc.name,self.reference_field_for_party)
+			# party_type = get_party_type(doc.doctype,doc.name,self.reference_field_for_party)
 			
-			if not party_reference:
-				frappe.msgprint("No party found in field <b>{field}</b>".format(field=self.reference_field_for_party))			
+			
+			if not address_link:
+				frappe.msgprint("No address found in field <b>{field}</b>".format(field=self.address_link))
+
 			list_of_contact = frappe.db.sql("""
-			select phone from `tabDynamic Link` dl inner join `tabAddress Contact` cp on dl.parent = cp.parent where dl.link_name = %(party)s and dl.link_doctype = %(link_type)s and cp.is_whatsapp_number = 1
+			select phone from `tabDynamic Link` dl inner join `tabAddress Contact` cp on dl.parent = cp.parent where dl.parent = %(address_link)s and cp.is_whatsapp_number = 1
 			""",({
-				"party" : party_reference,
-				"link_type": party_type
+				"address_link" : address_link
 			}),as_dict=1)
+
+			# list_of_contact = frappe.db.sql("""
+			# select phone from `tabDynamic Link` dl inner join `tabAddress Contact` cp on dl.parent = cp.parent where dl.link_name = %(party)s and dl.link_doctype = %(link_type)s and cp.is_whatsapp_number = 1
+			# """,({
+			# 	"party" : party_reference,
+			# 	"link_type": party_type
+			# }),as_dict=1)
+
+			
+
+			# frappe.msgprint(str(list_of_contact))
 
 			for num in list_of_contact:
 				rectify_number = self.validate_mobile_number(num['phone'])
@@ -118,6 +131,7 @@ class WhatsappNotification(Document):
 # -----------------------------------------Dynamic Values Setup-----------------------------------------------------------
 		
 # ----------------------------------------Send Call--------------------------------------------------
+		
 		if len(mobile_numbers) > 0:
 			for mobile_number in mobile_numbers:
 				res = send_to_whatsapp(self.template_type,doc.doctype,doc.name,receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values)

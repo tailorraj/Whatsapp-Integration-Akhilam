@@ -17,6 +17,7 @@
   "mobile_number_field",
   "send_to_multiple_contact",
   "reference_field_for_party",
+  "address_link",
   "column_break_4",
   "template",
   "whatsapp_template_name",
@@ -178,11 +179,16 @@
    "fieldname": "date_changed",
    "fieldtype": "Select",
    "label": "Reference Date"
+  },
+  {
+   "fieldname": "address_link",
+   "fieldtype": "Select",
+   "label": "Reference field for address link"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-05 18:18:47.776348",
+ "modified": "2023-03-20 17:23:49.816642",
  "modified_by": "Administrator",
  "module": "Whatsapp Integration",
  "name": "Whatsapp Notification",

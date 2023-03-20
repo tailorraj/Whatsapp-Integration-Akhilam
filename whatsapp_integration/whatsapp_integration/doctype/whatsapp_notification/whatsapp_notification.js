@@ -34,6 +34,7 @@ frappe.notification = {
 			frm.set_df_property("reference_field_for_party", "options", [""].concat(options));
 			frm.set_df_property("value_changed", "options", [""].concat(options));
 			frm.set_df_property("set_property_after_alert", "options", [""].concat(options));
+			frm.set_df_property("address_link", "options", [""].concat(options));
 
 			// set date changed options
 			frm.set_df_property("date_changed", "options", get_date_change_options());
@@ -78,6 +79,7 @@ frappe.ui.form.on('Whatsapp Notification', {
 			frm.set_df_property("reference_field_for_party", "options", [""].concat(options));
 			frm.set_df_property("value_changed", "options", [""].concat(options));
 			frm.set_df_property("set_property_after_alert", "options", [""].concat(options));
+			frm.set_df_property("address_link", "options", [""].concat(options));
 
 			// set date changed options
 			frm.set_df_property("date_changed", "options", get_date_change_options());
