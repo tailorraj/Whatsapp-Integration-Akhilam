@@ -22,6 +22,7 @@
   "template",
   "whatsapp_template_name",
   "template_type",
+  "print_format_name",
   "whatsapp_text_template",
   "section_break_11",
   "location_table",
@@ -184,11 +185,17 @@
    "fieldname": "address_link",
    "fieldtype": "Select",
    "label": "Reference field for address link"
+  },
+  {
+   "fieldname": "print_format_name",
+   "fieldtype": "Link",
+   "label": "Print Format Name",
+   "options": "Print Format"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-20 17:23:49.816642",
+ "modified": "2023-04-05 11:27:57.533582",
  "modified_by": "Administrator",
  "module": "Whatsapp Integration",
  "name": "Whatsapp Notification",

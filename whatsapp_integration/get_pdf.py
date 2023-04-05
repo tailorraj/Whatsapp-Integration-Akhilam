@@ -5,11 +5,11 @@ from frappe.utils.print_format import download_pdf
 
 
 @frappe.whitelist(allow_guest=True)
-def pdf(doctype, name, key):
+def pdf(doctype, name, key,format=None):
 	doc = frappe.get_doc(doctype, name)
 	if not key == doc.get_signature():
 		return 403
-	download_pdf(doctype, name, format=None, doc=None, no_letterhead=0)
+	download_pdf(doctype, name, format=format, doc=None, no_letterhead=0)
 
 # @frappe.whitelist(allow_guest=True)
 # def pdf(*args, **kwargs):

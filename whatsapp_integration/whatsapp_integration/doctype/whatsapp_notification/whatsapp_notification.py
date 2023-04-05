@@ -134,7 +134,7 @@ class WhatsappNotification(Document):
 		
 		if len(mobile_numbers) > 0:
 			for mobile_number in mobile_numbers:
-				res = send_to_whatsapp(self.template_type,doc.doctype,doc.name,receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values)
+				res = send_to_whatsapp(self.template_type,doc.doctype,doc.name,receiver=mobile_number,template_name=self.whatsapp_template_name,dynamic_values=dynamic_values,print_format_name=self.print_format_name)
 				create_whatsapp_log({
 				"doctype_name" : doc.doctype,
 				"doc_name" : doc.name,			

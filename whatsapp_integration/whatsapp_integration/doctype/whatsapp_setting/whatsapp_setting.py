@@ -14,7 +14,7 @@ class WhatsappSetting(Document):
 	pass
 
 @frappe.whitelist()
-def send_to_whatsapp(template_type,ref_doctype,ref_docname,receiver,template_name,dynamic_values):
+def send_to_whatsapp(template_type,ref_doctype,ref_docname,receiver,template_name,dynamic_values,print_format_name):
 	whatsAppSetting = frappe.get_single("Whatsapp Setting")
 	token = whatsAppSetting.get_password('access_token')
 	phone_id = whatsAppSetting.get_password('phone_id')	
@@ -29,7 +29,7 @@ def send_to_whatsapp(template_type,ref_doctype,ref_docname,receiver,template_nam
 			"language": {
 				"code": "en"
 			},
-			"components": create_components(template_type,ref_doctype,ref_docname,dynamic_values)
+			"components": create_components(template_type,ref_doctype,ref_docname,dynamic_values,print_format_name)
 		}
 	}
 	headers = {
@@ -44,7 +44,7 @@ def send_to_whatsapp(template_type,ref_doctype,ref_docname,receiver,template_nam
 	
 	return r
 
-def create_components(template_type,ref_doctype,ref_docname,dynamic_values):
+def create_components(template_type,ref_doctype,ref_docname,dynamic_values,print_formate_name):
 	components = []
 	if template_type == "Media":
 		components.append({
@@ -54,7 +54,7 @@ def create_components(template_type,ref_doctype,ref_docname,dynamic_values):
 						{
 							"type": "document",
 							"document": {
-								"link": get_url_for_whatsapp(ref_doctype, ref_docname),
+								"link": get_url_for_whatsapp(ref_doctype, ref_docname,print_formate_name),
 								"filename":str(ref_docname)
 							}
 							
@@ -70,11 +70,12 @@ def create_components(template_type,ref_doctype,ref_docname,dynamic_values):
 	})
 	return components
 
-def get_url_for_whatsapp(doctype, name):
+def get_url_for_whatsapp(doctype, name,print_formate_name):
 	doc = frappe.get_doc(doctype, name)
-	return "{url}/api/method/whatsapp_integration.get_pdf.pdf?doctype={doctype}&name={name}&key={key}".format(
+	return "{url}/api/method/whatsapp_integration.get_pdf.pdf?doctype={doctype}&name={name}&key={key}&format={format}".format(
 		url=frappe.utils.get_url(),
 		doctype=quoted(doctype),
 		name=quoted(name),
-		key=doc.get_signature()
+		key=doc.get_signature(),
+		format = print_formate_name
 	)

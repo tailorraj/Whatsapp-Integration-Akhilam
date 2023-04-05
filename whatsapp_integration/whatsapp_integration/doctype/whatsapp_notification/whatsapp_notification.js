@@ -46,6 +46,13 @@ frappe.notification = {
 frappe.ui.form.on('Whatsapp Notification', {
 	refresh: function(frm) {
 		frappe.notification.setup_fieldname_select(frm);
+		cur_frm.fields_dict['print_format_name'].get_query = function(doc) {
+			return {
+				filters: {
+					"doc_type": frm.doc.doctype_c
+				}
+			}
+		}
 	},
 	setup_fieldname_select: function(frm) {
 		// get the doctype to update fields
